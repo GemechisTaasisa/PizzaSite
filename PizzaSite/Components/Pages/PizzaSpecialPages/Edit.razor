@@ -1,0 +1,104 @@
+﻿@page "/pizzaspecials/edit"
+@using Microsoft.EntityFrameworkCore
+@using PizzaSite.Model
+@inject IDbContextFactory<PizzaSite.Data.PizzaSiteDBContext> DbFactory
+@inject NavigationManager NavigationManager
+
+<PageTitle>Edit</PageTitle>
+
+<h1>Edit</h1>
+
+<h2>PizzaSpecial</h2>
+<hr />
+@if (PizzaSpecial is null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <div class="row">
+        <div class="col-md-4">
+            <EditForm method="post" Model="PizzaSpecial" OnValidSubmit="UpdatePizzaSpecial" FormName="edit" Enhance>
+                <DataAnnotationsValidator />
+                <ValidationSummary role="alert"/>
+                <input type="hidden" name="PizzaSpecial.Id" value="@PizzaSpecial.Id" />
+                <div class="mb-3">
+                    <label for="name" class="form-label">Name:</label>
+                    <InputText id="name" @bind-Value="PizzaSpecial.Name" class="form-control" />
+                    <ValidationMessage For="() => PizzaSpecial.Name" class="text-danger" />
+                </div>
+                <div class="mb-3">
+                    <label for="baseprice" class="form-label">BasePrice:</label>
+                    <InputNumber id="baseprice" @bind-Value="PizzaSpecial.BasePrice" class="form-control" />
+                    <ValidationMessage For="() => PizzaSpecial.BasePrice" class="text-danger" />
+                </div>
+                <div class="mb-3">
+                    <label for="description" class="form-label">Description:</label>
+                    <InputText id="description" @bind-Value="PizzaSpecial.Description" class="form-control" />
+                    <ValidationMessage For="() => PizzaSpecial.Description" class="text-danger" />
+                </div>
+                <div class="mb-3">
+                    <label for="imageurl" class="form-label">ImageUrl:</label>
+                    <InputText id="imageurl" @bind-Value="PizzaSpecial.ImageUrl" class="form-control" />
+                    <ValidationMessage For="() => PizzaSpecial.ImageUrl" class="text-danger" />
+                </div>
+                <button type="submit" class="btn btn-primary">Save</button>
+            </EditForm>
+        </div>
+    </div>
+}
+
+<div>
+    <a href="/pizzaspecials">Back to List</a>
+</div>
+
+@code {
+    [SupplyParameterFromQuery]
+    private int Id { get; set; }
+
+    [SupplyParameterFromForm]
+    private PizzaSpecial? PizzaSpecial { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        using var context = DbFactory.CreateDbContext();
+        PizzaSpecial ??= await context.PizzaSpecial.FirstOrDefaultAsync(m => m.Id == Id);
+
+        if (PizzaSpecial is null)
+        {
+            NavigationManager.NavigateTo("notfound");
+        }
+    }
+
+    // To protect from overposting attacks, enable the specific properties you want to bind to.
+    // For more information, see https://learn.microsoft.com/aspnet/core/blazor/forms/#mitigate-overposting-attacks.
+    private async Task UpdatePizzaSpecial()
+    {
+        using var context = DbFactory.CreateDbContext();
+        context.Attach(PizzaSpecial!).State = EntityState.Modified;
+
+        try
+        {
+            await context.SaveChangesAsync();
+        }
+        catch (DbUpdateConcurrencyException)
+        {
+            if (!PizzaSpecialExists(PizzaSpecial!.Id))
+            {
+                NavigationManager.NavigateTo("notfound");
+            }
+            else
+            {
+                throw;
+            }
+        }
+
+        NavigationManager.NavigateTo("/pizzaspecials");
+    }
+
+    private bool PizzaSpecialExists(int id)
+    {
+        using var context = DbFactory.CreateDbContext();
+        return context.PizzaSpecial.Any(e => e.Id == id);
+    }
+}

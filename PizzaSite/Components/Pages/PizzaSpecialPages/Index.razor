@@ -1,0 +1,57 @@
+﻿@page "/pizzaspecials"
+@using Microsoft.EntityFrameworkCore
+@using Microsoft.AspNetCore.Components.QuickGrid
+@using PizzaSite.Model
+@using PizzaSite.Data
+@implements IAsyncDisposable
+@inject IDbContextFactory<PizzaSite.Data.PizzaSiteDBContext> DbFactory
+@inject NavigationManager NavigationManager
+
+<PageTitle>BlazingPizza</PageTitle>
+
+<h1>Blazing Pizzas</h1>
+<p>
+    <a class="btn btn-primary" href="pizzaspecials/create">Create New</a>
+</p>
+<br>
+
+<div class="pizza-container">
+    <ul class="pizza-cards">
+
+        @foreach (var special in specials)
+        {
+            <li style="background-image: url('@special.ImageUrl')">
+                <div class="pizza-info">
+                    <span class="title">@special.Name</span>
+                    @special.Description
+                    <span class="price">@special.GetFormattedBasePrice()</span>
+                    <div class="actions">
+                        <a href="@($"pizzaspecials/edit?id={special.Id}")">Edit</a> |
+                        <a href="@($"pizzaspecials/details?id={special.Id}")">Details</a> |
+                        <a href="@($"pizzaspecials/delete?id={special.Id}")">Delete</a>
+                    </div>
+                </div>
+            </li>
+        }
+    </ul>
+</div>
+
+@code {
+    private PizzaSiteDBContext context = default!;
+    List<PizzaSpecial> sampleSpecials = new();
+    List<PizzaSpecial> specials = new();
+
+    protected override void OnInitialized()
+    {
+        context = DbFactory.CreateDbContext();
+        LoadDatabaseSpecials();
+    }
+
+
+    private void LoadDatabaseSpecials()
+    {
+        specials = context.PizzaSpecial.ToList();
+    }
+
+    public async ValueTask DisposeAsync() => await context.DisposeAsync();
+}

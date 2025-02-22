@@ -1,0 +1,92 @@
+﻿.pizza-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: center;
+    padding: 20px;
+}
+
+.pizza-cards {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: center;
+}
+
+    .pizza-cards li {
+        position: relative;
+        width: 250px;
+        height: 350px;
+        background-size: cover;
+        background-position: center;
+        border-radius: 15px;
+        overflow: hidden;
+        display: flex;
+        align-items: flex-end;
+        transition: transform 0.3s ease-in-out;
+    }
+
+        .pizza-cards li:hover {
+            transform: scale(1.05);
+        }
+
+.pizza-info {
+    background: rgba(0, 0, 0, 0.6);
+    color: white;
+    padding: 15px;
+    width: 100%;
+    text-align: center;
+}
+
+    .pizza-info .title {
+        font-size: 1.2em;
+        font-weight: bold;
+        display: block;
+        margin-bottom: 5px;
+    }
+
+    .pizza-info .price {
+        font-size: 1em;
+        font-weight: bold;
+        color: #ffcc00;
+        display: block;
+        margin-top: 5px;
+    }
+
+.actions {
+    margin-top: 10px;
+}
+
+    .actions a {
+        color: white;
+        text-decoration: none;
+        font-weight: bold;
+        margin: 0 5px;
+        padding: 5px 10px;
+        border-radius: 5px;
+        background-color: rgba(255, 255, 255, 0.2);
+        transition: background 0.3s ease;
+    }
+
+        .actions a:hover {
+            background-color: rgba(255, 255, 255, 0.5);
+        }
+
+/* Styling for the "Create New" button */
+.btn-primary {
+    display: inline-block;
+    background-color: #ff5722;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 5px;
+    text-decoration: none;
+    font-size: 1.2em;
+    font-weight: bold;
+    transition: background 0.3s ease-in-out;
+}
+
+    .btn-primary:hover {
+        background-color: #e64a19;
+    }

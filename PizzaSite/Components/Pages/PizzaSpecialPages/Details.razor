@@ -1,0 +1,52 @@
+﻿@page "/pizzaspecials/details"
+@using Microsoft.EntityFrameworkCore
+@using PizzaSite.Model
+@inject IDbContextFactory<PizzaSite.Data.PizzaSiteDBContext> DbFactory
+@inject NavigationManager NavigationManager
+
+<PageTitle>Details</PageTitle>
+
+<h1>Details</h1>
+
+<div>
+    <h2>PizzaSpecial</h2>
+    <hr />
+    @if (pizzaspecial is null)
+    {
+        <p><em>Loading...</em></p>
+    }
+    else {
+        <dl class="row">
+            <dt class="col-sm-2">Name</dt>
+            <dd class="col-sm-10">@pizzaspecial.Name</dd>
+            <dt class="col-sm-2">BasePrice</dt>
+            <dd class="col-sm-10">@pizzaspecial.BasePrice</dd>
+            <dt class="col-sm-2">Description</dt>
+            <dd class="col-sm-10">@pizzaspecial.Description</dd>
+            <dt class="col-sm-2">ImageUrl</dt>
+            <dd class="col-sm-10">@pizzaspecial.ImageUrl</dd>
+        </dl>
+        <div>
+            <a href="@($"/pizzaspecials/edit?id={pizzaspecial.Id}")">Edit</a> |
+            <a href="@($"/pizzaspecials")">Back to List</a>
+        </div>
+    }
+</div>
+
+@code {
+    private PizzaSpecial? pizzaspecial;
+
+    [SupplyParameterFromQuery]
+    private int Id { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        using var context = DbFactory.CreateDbContext();
+        pizzaspecial = await context.PizzaSpecial.FirstOrDefaultAsync(m => m.Id == Id);
+
+        if (pizzaspecial is null)
+        {
+            NavigationManager.NavigateTo("notfound");
+        }
+    }
+}

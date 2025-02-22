@@ -1,0 +1,59 @@
+﻿@page "/pizzaspecials/create"
+@using Microsoft.EntityFrameworkCore
+@using PizzaSite.Model
+@inject IDbContextFactory<PizzaSite.Data.PizzaSiteDBContext> DbFactory
+@inject NavigationManager NavigationManager
+
+<PageTitle>Create</PageTitle>
+
+<h1>Create</h1>
+
+<h2>PizzaSpecial</h2>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <EditForm method="post" Model="PizzaSpecial" OnValidSubmit="AddPizzaSpecial" FormName="create" Enhance>
+            <DataAnnotationsValidator />
+            <ValidationSummary class="text-danger" role="alert"/>
+            <div class="mb-3">
+                <label for="name" class="form-label">Name:</label> 
+                <InputText id="name" @bind-Value="PizzaSpecial.Name" class="form-control" /> 
+                <ValidationMessage For="() => PizzaSpecial.Name" class="text-danger" /> 
+            </div>        
+            <div class="mb-3">
+                <label for="baseprice" class="form-label">BasePrice:</label> 
+                <InputNumber id="baseprice" @bind-Value="PizzaSpecial.BasePrice" class="form-control" /> 
+                <ValidationMessage For="() => PizzaSpecial.BasePrice" class="text-danger" /> 
+            </div>        
+            <div class="mb-3">
+                <label for="description" class="form-label">Description:</label> 
+                <InputText id="description" @bind-Value="PizzaSpecial.Description" class="form-control" /> 
+                <ValidationMessage For="() => PizzaSpecial.Description" class="text-danger" /> 
+            </div>        
+            <div class="mb-3">
+                <label for="imageurl" class="form-label">ImageUrl:</label> 
+                <InputText id="imageurl" @bind-Value="PizzaSpecial.ImageUrl" class="form-control" /> 
+                <ValidationMessage For="() => PizzaSpecial.ImageUrl" class="text-danger" /> 
+            </div>        
+            <button type="submit" class="btn btn-primary">Create</button>
+        </EditForm>
+    </div>
+</div>
+
+<div>
+    <a href="/pizzaspecials">Back to List</a>
+</div>
+
+@code {
+    [SupplyParameterFromForm]
+    private PizzaSpecial PizzaSpecial { get; set; } = new();
+
+    // To protect from overposting attacks, see https://learn.microsoft.com/aspnet/core/blazor/forms/#mitigate-overposting-attacks.
+    private async Task AddPizzaSpecial()
+    {
+        using var context = DbFactory.CreateDbContext();
+        context.PizzaSpecial.Add(PizzaSpecial);
+        await context.SaveChangesAsync();
+        NavigationManager.NavigateTo("/pizzaspecials");
+    }
+}

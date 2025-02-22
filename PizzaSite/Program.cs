@@ -1,6 +1,14 @@
 using PizzaSite.Components;
 using PizzaSite.Data;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 var builder = WebApplication.CreateBuilder(args);
+builder.Services.AddDbContextFactory<PizzaSiteDBContext>(options =>
+    options.UseSqlite(builder.Configuration.GetConnectionString("PizzaSiteDBContext") ?? throw new InvalidOperationException("Connection string 'PizzaSiteDBContext' not found.")));
+
+builder.Services.AddQuickGridEntityFrameworkAdapter();
+
+builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
 //This code registers two services. The first AddHttpClient
 //statement allows the app to access HTTP commands.
@@ -23,6 +31,7 @@ if (!app.Environment.IsDevelopment())
     app.UseExceptionHandler("/Error", createScopeForErrors: true);
     // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
+    app.UseMigrationsEndPoint();
 }
 
 app.UseHttpsRedirection();
