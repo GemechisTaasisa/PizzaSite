@@ -10,15 +10,28 @@
 <PageTitle>BlazingPizza</PageTitle>
 
 <h1>Blazing Pizzas</h1>
+<br>
+<br>
 <p>
     <a class="btn btn-primary" href="pizzaspecials/create">Create New</a>
 </p>
+<br><br>
+<!-- Search Bar -->
+@* <div class="search-container">
+    <input type="text" @bind="searchQuery" @bind:event="oninput" placeholder="Search by name" />
+    <button @onclick="OnSearchClicked">Search</button>
+</div> *@
+<div class="search-container">
+    <input type="text" @bind="searchQuery" @bind:event="oninput" placeholder="Search by name" />
+</div>
+<br>
 <br>
 
-<div class="pizza-container">
-    <ul class="pizza-cards">
 
-        @foreach (var special in specials)
+<div class="pizza-container">
+    <br><br>
+    <ul class="pizza-cards">
+        @foreach (var special in FilteredSpecials)
         {
             <li style="background-image: url('@special.ImageUrl')">
                 <div class="pizza-info">
@@ -38,8 +51,8 @@
 
 @code {
     private PizzaSiteDBContext context = default!;
-    List<PizzaSpecial> sampleSpecials = new();
     List<PizzaSpecial> specials = new();
+    private string searchQuery = string.Empty;
 
     protected override void OnInitialized()
     {
@@ -47,11 +60,15 @@
         LoadDatabaseSpecials();
     }
 
-
     private void LoadDatabaseSpecials()
     {
         specials = context.PizzaSpecial.ToList();
     }
+
+    private IEnumerable<PizzaSpecial> FilteredSpecials =>
+        string.IsNullOrWhiteSpace(searchQuery)
+        ? specials
+        : specials.Where(s => s.Name.Contains(searchQuery, StringComparison.OrdinalIgnoreCase));
 
     public async ValueTask DisposeAsync() => await context.DisposeAsync();
 }
